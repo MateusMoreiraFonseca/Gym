@@ -1,0 +1,67 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editar Perfil</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+  </head>
+  <body>
+    <div class="shell">
+      <div class="app-card">
+        <h1>Editar Perfil</h1>
+        <p>Troque sua senha de acesso.</p>
+
+        <div
+          th:if="${errorMessage}"
+          class="message error"
+          th:text="${errorMessage}"
+        ></div>
+        <div
+          th:if="${successMessage}"
+          class="message success"
+          th:text="${successMessage}"
+        ></div>
+
+        <form
+          th:action="@{/perfil/editar}"
+          th:object="${formulario}"
+          method="post"
+        >
+          <div class="field-grid">
+            <div class="field">
+              <label>Usuário</label>
+              <input type="text" th:value="${username}" disabled />
+            </div>
+
+            <div class="field">
+              <label>Nova senha</label>
+              <input
+                type="password"
+                th:field="*{novaSenha}"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label>Confirmar nova senha</label>
+              <input
+                type="password"
+                th:field="*{confirmacaoNovaSenha}"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="actions" style="margin-top: 1.5rem">
+            <button class="btn" type="submit">Salvar</button>
+            <a class="btn btn-secondary" th:href="@{/home}">Cancelar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
+

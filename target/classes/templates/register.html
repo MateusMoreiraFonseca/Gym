@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadastro</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+</head>
+<body>
+<div class="shell">
+    <div class="app-card">
+        <h1>Cadastrar Usuário</h1>
+        <p>Crie sua conta para acessar a área do Gym.</p>
+
+        <div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
+
+        <form th:action="@{/register}" th:object="${userForm}" method="post">
+            <div class="field-grid">
+                <div class="field">
+                    <label>Usuário</label>
+                    <input type="text" th:field="*{username}" placeholder="seu-usuario" required />
+                </div>
+
+                <div class="field">
+                    <label>Senha</label>
+                    <input type="password" th:field="*{password}" placeholder="••••••••" required />
+                </div>
+            </div>
+
+            <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="field">
+                <label>
+                    <input type="checkbox" th:field="*{admin}" />
+                    IsAdmin
+                </label>
+            </div>
+
+            <div class="actions">
+
+                <button class="btn" type="submit">Cadastrar</button>
+                <a class="btn" th:href="@{/login}" style="background:#475569;">
+                    Voltar ao Login
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+
