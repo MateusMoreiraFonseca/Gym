@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Usuários</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}" />
+</head>
+<body>
+<div class="shell">
+    <div class="app-card">
+        <h1>Usuários Cadastrados</h1>
+        <p>Acesso restrito para administradores.</p>
+
+        <div class="message error" th:if="${#lists.isEmpty(usuarios)}">
+            Nenhum usuário encontrado.
+        </div>
+
+        <form th:action="@{/admin/usuarios/deletar}" method="post">
+            <table class="admin-table">
+                <thead>
+                <tr>
+                    <th>Deletar</th>
+                    <th>ID</th>
+                    <th>Usuário</th>
+                    <th>Perfil</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="u : ${usuarios}">
+                    <td data-label="Deletar">
+                        <input type="radio" name="usuarioId" th:value="${u.id}" />
+                    </td>
+                    <td data-label="ID" th:text="${u.id}"></td>
+                    <td data-label="Usuário" th:text="${u.username}"></td>
+                    <td data-label="Perfil" th:text="${u.admin ? 'ADMIN' : 'USER'}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="actions" style="margin-top: 1rem;">
+                <button class="btn btn-danger" type="submit">Deletar</button>
+                <a class="btn btn-secondary" th:href="@{/home}">Voltar</a>
+            </div>
+        </form>
+
+        <div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
+        <div th:if="${successMessage}" class="message success" th:text="${successMessage}"></div>
+
+    </div>
+</div>
+</body>
+</html>
+
