@@ -3,6 +3,8 @@ package com.app.gym.infrastructure;
 import com.app.gym.application.RepositorioContaUsuario;
 import com.app.gym.application.ServicoJwt;
 import com.app.gym.domain.ContaUsuario;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,7 +38,7 @@ public class ControladorAutenticacaoApi {
      * Valida as credenciais recebidas e retorna um token JWT quando o login for bem-sucedido.
      */
     @PostMapping("/login")
-    public ResponseEntity<?> realizarLogin(@RequestBody CredenciaisLogin credenciaisLogin) {
+    public ResponseEntity<?> realizarLogin(@Valid @RequestBody CredenciaisLogin credenciaisLogin) {
         Optional<ContaUsuario> contaUsuarioOpcional = repositorioContaUsuario.findByUsername(credenciaisLogin.username());
 
         if (contaUsuarioOpcional.isPresent() && passwordEncoder.matches(credenciaisLogin.password(), contaUsuarioOpcional.get().getPassword())) {
@@ -51,6 +53,9 @@ public class ControladorAutenticacaoApi {
         return ResponseEntity.status(401).body(Map.of("erro", "Credenciais inválidas"));
     }
 
-    public record CredenciaisLogin(String username, String password) {
+    public record CredenciaisLogin(
+            @NotBlank(message = "Username é obrigatório") String username,
+            @NotBlank(message = "Senha é obrigatória") String password
+    ) {
     }
 }

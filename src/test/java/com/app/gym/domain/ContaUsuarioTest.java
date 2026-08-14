@@ -1,50 +1,48 @@
-// package com.app.gym.domain;
+package com.app.gym.domain;
 
-// import org.junit.jupiter.api.Test;
-// import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-// public class ContaUsuarioTest {
+public class ContaUsuarioTest {
 
-//     @Test
-//     public void deveCriarContaUsuarioComDadosValidos() {
-//         // Given
-//         String nome = "João Silva";
-//         String email = "joao.silva@example.com";
-//         String senha = "senhaSegura123";
+    @Test
+    public void deveCriarContaUsuarioComDadosValidos() {
+        // Given
+        String username = "joao.silva";
+        String password = "senhaEncriptada123";
+        boolean admin = false;
 
-//         // When
-//         ContaUsuario conta = new ContaUsuario(nome, email, senha);
+        // When
+        ContaUsuario conta = new ContaUsuario(username, password, admin);
 
-//         // Then
-//         assertEquals(nome, conta.getNome());
-//         assertEquals(email, conta.getEmail());
-//         assertNotNull(conta.getId());
-//         assertTrue(conta.isAtiva());
-//     }
+        // Then
+        assertEquals(username, conta.getUsername());
+        assertEquals(password, conta.getPassword());
+        assertFalse(conta.isAdmin());
+    }
 
-//     @Test
-//     public void deveValidarEmailInvalido() {
-//         // Given
-//         String nome = "João Silva";
-//         String email = "emailinvalido";
-//         String senha = "senhaSegura123";
+    @Test
+    public void deveCriarContaAdministrador() {
+        // Given
+        String username = "admin";
+        String password = "senhaAdminEncriptada123";
+        boolean admin = true;
 
-//         // When & Then
-//         assertThrows(IllegalArgumentException.class, () -> {
-//             new ContaUsuario(nome, email, senha);
-//         });
-//     }
+        // When
+        ContaUsuario conta = new ContaUsuario(username, password, admin);
 
-//     @Test
-//     public void deveValidarSenhaFraca() {
-//         // Given
-//         String nome = "João Silva";
-//         String email = "joao.silva@example.com";
-//         String senha = "123";
+        // Then
+        assertEquals(username, conta.getUsername());
+        assertEquals(password, conta.getPassword());
+        assertTrue(conta.isAdmin());
+    }
 
-//         // When & Then
-//         assertThrows(IllegalArgumentException.class, () -> {
-//             new ContaUsuario(nome, email, senha);
-//         });
-//     }
-// }
+    @Test
+    public void deveRetornarIdNull_QuandoCriadaSemPeristencia() {
+        // Given
+        ContaUsuario conta = new ContaUsuario("user", "pass", false);
+
+        // When & Then
+        assertNull(conta.getId());
+    }
+}

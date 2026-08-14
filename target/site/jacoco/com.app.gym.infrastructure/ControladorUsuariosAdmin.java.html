@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ControladorUsuariosAdmin.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gym</a> &gt; <a href="index.source.html" class="el_package">com.app.gym.infrastructure</a> &gt; <span class="el_source">ControladorUsuariosAdmin.java</span></div><h1>ControladorUsuariosAdmin.java</h1><pre class="source lang-java linenums">package com.app.gym.infrastructure;
+
+import com.app.gym.application.RepositorioContaUsuario;
+import com.app.gym.application.ServicoListarUsuarios;
+import com.app.gym.domain.ContaUsuario;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+
+@Controller
+public class ControladorUsuariosAdmin {
+
+    private final ServicoListarUsuarios servicoListarUsuarios;
+    private final RepositorioContaUsuario repositorioContaUsuario;
+
+
+    /**
+     * Cria o controlador para telas administrativas.
+     */
+    public ControladorUsuariosAdmin(ServicoListarUsuarios servicoListarUsuarios,
+<span class="fc" id="L26">                                     RepositorioContaUsuario repositorioContaUsuario) {</span>
+<span class="fc" id="L27">        this.servicoListarUsuarios = servicoListarUsuarios;</span>
+<span class="fc" id="L28">        this.repositorioContaUsuario = repositorioContaUsuario;</span>
+<span class="fc" id="L29">    }</span>
+
+
+    /**
+     * Exibe uma tela com a lista de usuários existentes (acesso restrito a ADMIN).
+     */
+    @GetMapping(&quot;/admin/usuarios&quot;)
+    public String listarUsuarios(Model model, Authentication authentication) {
+<span class="nc" id="L37">        List&lt;ContaUsuario&gt; usuarios = servicoListarUsuarios.listarTodosUsuarios();</span>
+<span class="nc" id="L38">        model.addAttribute(&quot;usuarios&quot;, usuarios);</span>
+<span class="nc" id="L39">        return &quot;admin-usuarios&quot;;</span>
+    }
+
+    @PostMapping(&quot;/admin/usuarios/deletar&quot;)
+    public String deletarUsuario(
+            @RequestParam(&quot;usuarioId&quot;) Long usuarioId,
+            Model model,
+            Authentication authentication
+    ) {
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">        boolean logadoEhAdmin = authentication != null &amp;&amp; authentication.getAuthorities().stream()</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">                .anyMatch(a -&gt; a.getAuthority().equals(&quot;ROLE_ADMIN&quot;));</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">        if (!logadoEhAdmin) {</span>
+<span class="fc" id="L51">            model.addAttribute(&quot;errorMessage&quot;, &quot;Acesso negado.&quot;);</span>
+<span class="fc" id="L52">            model.addAttribute(&quot;usuarios&quot;, servicoListarUsuarios.listarTodosUsuarios());</span>
+<span class="fc" id="L53">            return &quot;admin-usuarios&quot;;</span>
+        }
+
+        // Como o enunciado pede uma regra adicional: o usuário selecionado NÃO pode ser admin.
+        // Para isso, precisamos buscar o usuário a ser deletado.
+<span class="fc" id="L58">        var usuarioADeletar = servicoListarUsuarios.listarTodosUsuarios().stream()</span>
+<span class="fc" id="L59">                .filter(u -&gt; u.getId().equals(usuarioId))</span>
+<span class="fc" id="L60">                .findFirst();</span>
+
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        if (usuarioADeletar.isEmpty()) {</span>
+<span class="fc" id="L63">            model.addAttribute(&quot;errorMessage&quot;, &quot;Usuário não encontrado.&quot;);</span>
+<span class="fc" id="L64">            model.addAttribute(&quot;usuarios&quot;, servicoListarUsuarios.listarTodosUsuarios());</span>
+<span class="fc" id="L65">            return &quot;admin-usuarios&quot;;</span>
+        }
+
+<span class="fc bfc" id="L68" title="All 2 branches covered.">        if (usuarioADeletar.get().isAdmin()) {</span>
+<span class="fc" id="L69">            model.addAttribute(&quot;errorMessage&quot;, &quot;Não é permitido deletar um usuário ADMIN.&quot;);</span>
+<span class="fc" id="L70">            model.addAttribute(&quot;usuarios&quot;, servicoListarUsuarios.listarTodosUsuarios());</span>
+<span class="fc" id="L71">            return &quot;admin-usuarios&quot;;</span>
+        }
+
+        // Regra atendida: deletar usuário (apenas USERs).
+<span class="fc" id="L75">        repositorioContaUsuario.deleteById(usuarioId);</span>
+
+<span class="fc" id="L77">        model.addAttribute(&quot;successMessage&quot;, &quot;Usuário deletado com sucesso.&quot;);</span>
+<span class="fc" id="L78">        model.addAttribute(&quot;usuarios&quot;, servicoListarUsuarios.listarTodosUsuarios());</span>
+<span class="fc" id="L79">        return &quot;admin-usuarios&quot;;</span>
+    }
+
+
+    // Endpoint /admin/usuarios/novo removido: criação de usuários agora reutiliza /register.
+    // O form de admin em /register aparece somente para quem já está com ROLE_ADMIN.
+
+
+<span class="nc" id="L87">    public static class FormularioNovoUsuario {</span>
+
+        private String username;
+        private String password;
+        private boolean admin;
+
+        public String getUsername() {
+<span class="nc" id="L94">            return username;</span>
+        }
+
+        public void setUsername(String username) {
+<span class="nc" id="L98">            this.username = username;</span>
+<span class="nc" id="L99">        }</span>
+
+        public String getPassword() {
+<span class="nc" id="L102">            return password;</span>
+        }
+
+        public void setPassword(String password) {
+<span class="nc" id="L106">            this.password = password;</span>
+<span class="nc" id="L107">        }</span>
+
+        public boolean isAdmin() {
+<span class="nc" id="L110">            return admin;</span>
+        }
+
+        public void setAdmin(boolean admin) {
+<span class="nc" id="L114">            this.admin = admin;</span>
+<span class="nc" id="L115">        }</span>
+    }
+
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

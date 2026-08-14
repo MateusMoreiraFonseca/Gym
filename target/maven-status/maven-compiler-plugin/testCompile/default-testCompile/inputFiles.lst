@@ -1,2 +1,9 @@
-c:\Users\mateu\Documents\GitHub\Gym\src\test\java\com\app\gym\infrastructure\AuthControllerTest.java
-c:\Users\mateu\Documents\GitHub\Gym\src\test\java\com\app\gym\infrastructure\ControladorAutenticacaoApiTest.java
+C:\Users\mateu\Documents\GitHub\Gym\src\test\java\com\app\gym\application\ServicoAutenticacaoTest.java
+C:\Users\mateu\Documents\GitHub\Gym\src\test\java\com\app\gym\application\ServicoJwtTest.java
+C:\Users\mateu\Documents\GitHub\Gym\src\test\java\com\app\gym\application\ServicosAuxiliaresTest.java
+C:\Users\mateu\Documents\GitHub\Gym\src\test\java\com\app\gym\domain\ContaUsuarioTest.java
+C:\Users\mateu\Documents\GitHub\Gym\src\test\java\com\app\gym\infrastructure\AuthControllerTest.java
+C:\Users\mateu\Documents\GitHub\Gym\src\test\java\com\app\gym\infrastructure\ConfiguracaoSegurancaTest.java
+C:\Users\mateu\Documents\GitHub\Gym\src\test\java\com\app\gym\infrastructure\ControladorAutenticacaoApiTest.java
+C:\Users\mateu\Documents\GitHub\Gym\src\test\java\com\app\gym\infrastructure\ControladoresPerfilEAdminTest.java
+C:\Users\mateu\Documents\GitHub\Gym\src\test\java\com\app\gym\infrastructure\FiltroAutenticacaoJwtTest.java

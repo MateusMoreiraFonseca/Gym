@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConfiguracaoSeguranca.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gym</a> &gt; <a href="index.source.html" class="el_package">com.app.gym.infrastructure</a> &gt; <span class="el_source">ConfiguracaoSeguranca.java</span></div><h1>ConfiguracaoSeguranca.java</h1><pre class="source lang-java linenums">package com.app.gym.infrastructure;
+
+import com.app.gym.application.RepositorioContaUsuario;
+import com.app.gym.application.ServicoJwt;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+@Configuration
+@EnableWebSecurity
+<span class="fc" id="L18">public class ConfiguracaoSeguranca {</span>
+
+    /**
+     * Cria o codificador de senhas usado para proteger as credenciais dos usuários.
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+<span class="fc" id="L25">        return new BCryptPasswordEncoder();</span>
+    }
+
+    /**
+     * Define como o sistema carrega os detalhes do usuário a partir do repositório de contas.
+     */
+    @Bean
+    public UserDetailsService userDetailsService(RepositorioContaUsuario repository) {
+<span class="fc" id="L33">        return username -&gt; repository.findByUsername(username)</span>
+<span class="fc" id="L34">                .map(user -&gt; User.withUsername(user.getUsername())</span>
+<span class="fc" id="L35">                        .password(user.getPassword())</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">                        .roles(user.isAdmin() ? &quot;ADMIN&quot; : &quot;USER&quot;)</span>
+<span class="fc" id="L37">                        .build())</span>
+<span class="fc" id="L38">                .orElseThrow(() -&gt; new org.springframework.security.core.userdetails.UsernameNotFoundException(&quot;Usuário não encontrado&quot;));</span>
+    }
+
+
+    /**
+     * Cria o filtro de autenticação JWT que será incorporado à cadeia de segurança.
+     */
+    @Bean
+    public FiltroAutenticacaoJwt filtroAutenticacaoJwt(ServicoJwt servicoJwt,
+                                                       RepositorioContaUsuario repositorioContaUsuario,
+                                                       UserDetailsService userDetailsService) {
+<span class="fc" id="L49">        return new FiltroAutenticacaoJwt(servicoJwt, repositorioContaUsuario, userDetailsService);</span>
+    }
+
+    /**
+     * Configura as regras de acesso, login, logout e integração com o filtro JWT.
+     */
+    @Bean
+    public SecurityFilterChain filtroSeguranca(HttpSecurity http,
+                                               FiltroAutenticacaoJwt filtroAutenticacaoJwt) throws Exception {
+<span class="fc" id="L58">        http</span>
+<span class="fc" id="L59">            .authorizeHttpRequests(auth -&gt; auth</span>
+<span class="fc" id="L60">            .requestMatchers(&quot;/&quot;, &quot;/login&quot;, &quot;/register&quot;, &quot;/css/**&quot;, &quot;/js/**&quot;, &quot;/h2-console/**&quot;, &quot;/api/auth/login&quot;).permitAll()</span>
+<span class="fc" id="L61">                .requestMatchers(&quot;/admin/usuarios&quot;).hasRole(&quot;ADMIN&quot;)</span>
+<span class="fc" id="L62">                .requestMatchers(&quot;/admin/usuarios/deletar&quot;).hasRole(&quot;ADMIN&quot;)</span>
+
+<span class="fc" id="L64">                .requestMatchers(&quot;/api/**&quot;).authenticated()</span>
+<span class="fc" id="L65">                .anyRequest().authenticated())</span>
+<span class="fc" id="L66">            .formLogin(form -&gt; form</span>
+<span class="fc" id="L67">                .loginPage(&quot;/login&quot;)</span>
+<span class="fc" id="L68">                .successHandler((request, response, authentication) -&gt; {</span>
+<span class="fc" id="L69">                    boolean ehAdmin = authentication.getAuthorities().stream()</span>
+<span class="fc" id="L70">                            .anyMatch(a -&gt; a.getAuthority().equals(&quot;ROLE_ADMIN&quot;));</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">                    if (ehAdmin) {</span>
+<span class="fc" id="L72">                        response.sendRedirect(&quot;/admin/usuarios&quot;);</span>
+                    } else {
+<span class="fc" id="L74">                        response.sendRedirect(&quot;/home&quot;);</span>
+                    }
+<span class="fc" id="L76">                })</span>
+<span class="fc" id="L77">                .permitAll())</span>
+<span class="fc" id="L78">            .logout(logout -&gt; logout.logoutSuccessUrl(&quot;/login?logout&quot;).permitAll())</span>
+<span class="fc" id="L79">            .csrf(csrf -&gt; csrf.ignoringRequestMatchers(&quot;/h2-console/**&quot;, &quot;/api/auth/login&quot;));</span>
+
+
+<span class="fc" id="L82">        http.addFilterBefore(filtroAutenticacaoJwt, UsernamePasswordAuthenticationFilter.class);</span>
+<span class="fc" id="L83">        http.headers(headers -&gt; headers.frameOptions(frame -&gt; frame.sameOrigin()));</span>
+<span class="fc" id="L84">        return http.build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

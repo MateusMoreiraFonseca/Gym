@@ -2,9 +2,11 @@ package com.app.gym.infrastructure;
 
 import com.app.gym.application.ServiçoAutenticacao;
 import com.app.gym.application.UsuarioJaExistenteException;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,7 +43,14 @@ public class ControladorAutenticacao {
      * Processa o cadastro de um novo usuário e redireciona para a tela de login.
      */
     @PostMapping("/register")
-    public String cadastrar(@ModelAttribute("userForm") FormularioCadastro form, Model model) {
+    public String cadastrar(@Valid @ModelAttribute("userForm") FormularioCadastro form,
+                            BindingResult resultadoValidacao,
+                            Model model) {
+        if (resultadoValidacao.hasErrors()) {
+            model.addAttribute("errorMessage", "Informe usuário e senha.");
+            return "register";
+        }
+
         try {
             // Segurança: mesmo que o formulário seja manipulado no navegador, apenas ADMIN pode criar outro admin.
             var auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();

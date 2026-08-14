@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Gym</title>
+    <link rel="stylesheet" th:href="@{/css/auth.css}" />
+</head>
+<body>
+    <div class="auth-card">
+        <h1>Entrar no Gym</h1>
+        <p>Bem-vindo de volta! Faça login para acessar sua conta.</p>
+
+        <div th:if="${param.registered}" class="message success">Cadastro realizado com sucesso. Agora você pode entrar.</div>
+        <div th:if="${param.error}" class="message error">Usuário ou senha inválidos.</div>
+        <div th:if="${param.logout}" class="message success">Você saiu da sua conta.</div>
+
+         
+      
+          <a class="btn btn-yellow h2-console" th:href="@{/h2-console}">Abrir H2 Console</a>
+
+
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="username">Usuário</label>
+                <input id="username" type="text" name="username" required />
+            </div>
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input id="password" type="password" name="password" required />
+            </div>
+            <button class="btn" type="submit">Entrar</button>
+        </form>
+
+        <a class="link" th:href="@{/register}">Criar conta</a>
+    </div>
+</body>
+</html>
+

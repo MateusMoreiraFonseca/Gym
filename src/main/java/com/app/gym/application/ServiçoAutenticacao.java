@@ -32,6 +32,14 @@ public class ServiçoAutenticacao {
      * Permite definir se o usuário será ADMIN.
      */
     public ContaUsuario cadastrar(String username, String password, boolean isAdmin) {
+        // Validar inputs
+        if (username == null || username.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nome de usuário não pode ser vazio ou nulo");
+        }
+        if (password == null || password.trim().isEmpty()) {
+            throw new IllegalArgumentException("Senha não pode ser vazia ou nula");
+        }
+        
         if (userAccountRepository.findByUsername(username).isPresent()) {
             throw new UsuarioJaExistenteException("Usuário já existe");
         }
