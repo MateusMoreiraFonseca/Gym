@@ -74,7 +74,6 @@ public class ControladorAutenticacao {
     /**
      * Exibe a página inicial após a autenticação bem-sucedida do usuário.
      */
-    @GetMapping("/home")
     public String paginaInicial() {
         return "home";
     }
@@ -140,4 +139,3 @@ public class ControladorAutenticacao {
         }
     }
 }
-

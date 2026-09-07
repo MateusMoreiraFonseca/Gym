@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 
 @Entity
 public class ContaUsuario {
@@ -14,6 +15,9 @@ public class ContaUsuario {
     private String username;
     private String password;
     private boolean admin;
+    @Lob
+    private byte[] fotoPerfil;
+    private String tipoMimeFotoPerfil;
 
     /**
      * Cria uma instância vazia de conta de usuário para uso pelo framework de persistência.
@@ -49,4 +53,21 @@ public class ContaUsuario {
      * Informa se a conta possui privilégios de administrador.
      */
     public boolean isAdmin() { return admin; }
+
+    public byte[] getFotoPerfil() { return fotoPerfil; }
+
+    public String getTipoMimeFotoPerfil() { return tipoMimeFotoPerfil; }
+
+    public boolean possuiFotoPerfil() {
+        return fotoPerfil != null && fotoPerfil.length > 0 && tipoMimeFotoPerfil != null;
+    }
+
+    public void atualizarSenha(String novaSenha) {
+        this.password = novaSenha;
+    }
+
+    public void atualizarFotoPerfil(byte[] foto, String tipoMime) {
+        this.fotoPerfil = foto;
+        this.tipoMimeFotoPerfil = tipoMime;
+    }
 }

@@ -15,6 +15,10 @@ body {
     padding: 2rem;
 }
 
+.shell-wide {
+    max-width: 900px;
+}
+
 .app-card {
     background: rgba(255, 255, 255, 0.96);
     border-radius: 16px;
@@ -85,6 +89,14 @@ body {
     background: #dc2626;
 }
 
+/* Margin utilities */
+.margin-top-1 {
+    margin-top: 1rem;
+}
+
+.margin-top-1-5 {
+    margin-top: 1.5rem;
+}
 
 .field-grid {
     display: grid;
@@ -94,6 +106,150 @@ body {
 .field {
     display: grid;
     gap: 0.35rem;
+}
+
+.recurrence-options {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+}
+
+.recurrence-column {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.recurrence-options legend {
+    padding: 0 0.35rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.recurrence-options label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.65rem;
+    border-radius: 6px;
+    background: #f8fafc;
+    cursor: pointer;
+}
+
+.recurrence-options input {
+    width: auto;
+}
+
+.weekday-options {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+}
+
+.weekday-options legend {
+    padding: 0 0.35rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.weekday-options label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.65rem;
+    border-radius: 6px;
+    background: #f8fafc;
+    cursor: pointer;
+}
+
+.weekday-options input {
+    width: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+}
+
+.date-picker-button {
+    width: 100%;
+    padding: 0.85rem;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #fff;
+    color: #334155;
+    text-align: left;
+    cursor: pointer;
+}
+
+.date-picker {
+    width: min(360px, calc(100% - 2rem));
+    border: 0;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.25);
+}
+
+.date-picker::backdrop {
+    background: rgba(15, 23, 42, 0.45);
+}
+
+.date-picker-header,
+.date-picker-weekdays,
+.date-picker-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.35rem;
+    align-items: center;
+}
+
+.date-picker-header {
+    grid-template-columns: 2rem 1fr 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.date-picker-header button {
+    border: 0;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 1.35rem;
+    cursor: pointer;
+}
+
+.date-picker-weekdays {
+    margin-bottom: 0.4rem;
+    color: #64748b;
+    font-size: 0.75rem;
+    text-align: center;
+}
+
+.date-picker-days button {
+    aspect-ratio: 1;
+    border: 0;
+    border-radius: 50%;
+    background: #f8fafc;
+    color: #1e293b;
+    cursor: pointer;
+}
+
+.date-picker-days button:hover,
+.date-picker-days button.selected {
+    background: #2563eb;
+    color: #fff;
+}
+
+.date-picker > .btn {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+@media (max-width: 620px) {
+    .recurrence-options,
+    .weekday-options {
+        grid-template-columns: 1fr;
+    }
 }
 
 .field label {
@@ -107,6 +263,13 @@ body {
     border: 1px solid #d1d5db;
     border-radius: 10px;
     box-sizing: border-box;
+}
+
+.recurrence-options input {
+    width: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
 }
 
 .message {
@@ -127,6 +290,11 @@ body {
     background: #dcfce7;
     color: #166534;
     border: 1px solid rgba(22, 101, 52, 0.18);
+}
+
+.empty-state {
+    margin-top: 1.5rem !important;
+    text-align: center;
 }
 
 /* Align inline actions (home) */
@@ -246,4 +414,326 @@ body {
   box-sizing: border-box; /* garante que padding não aumente largura */
 }
 
+.home-header,
+.calendar-heading,
+.form-columns {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
 
+.home-header p {
+    text-align: left;
+    margin-bottom: 0;
+}
+
+.top-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.profile-avatar,
+.profile-photo-preview {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 50%;
+    background: #dbeafe;
+    color: #1d4ed8;
+    font-weight: 700;
+}
+
+.profile-avatar {
+    width: 46px;
+    height: 46px;
+    text-decoration: none;
+}
+
+.profile-avatar img,
+.profile-photo-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-photo-preview {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 1.5rem;
+    font-size: 3rem;
+}
+
+.calendar-heading {
+    justify-content: center;
+    margin: 1.5rem 0 0.75rem;
+}
+
+.calendar-heading h2,
+.day-details h2,
+.workout-form h2 {
+    color: #111827;
+}
+
+.calendar-nav {
+    color: #2563eb;
+    font-size: 2rem;
+    text-decoration: none;
+    line-height: 1;
+}
+
+.calendar-weekdays,
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.35rem;
+}
+
+.calendar-weekdays {
+    color: #64748b;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.calendar-day {
+    min-height: 3.5rem;
+    padding: 0.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    color: #111827;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #fff;
+}
+
+.calendar-day:hover,
+.calendar-day.selected {
+    border-color: #2563eb;
+    background: #eff6ff;
+}
+
+.calendar-day.today {
+    box-shadow: inset 0 0 0 2px #2563eb;
+}
+
+.calendar-day.empty {
+    border-color: transparent;
+    background: transparent;
+}
+
+.day-markers {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.marker {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.marker.measurement { background: #16a34a; }
+.marker.workout { background: #f97316; }
+
+.day-details,
+.workout-form {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.detail-grid h3 {
+    margin: 0 0 0.75rem;
+    color: #334155;
+}
+
+.detail-item {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-radius: 8px;
+    background: #f8fafc;
+}
+
+.muted {
+    color: #64748b;
+}
+
+.calorie-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+    gap: 0.75rem;
+}
+
+.calorie-cards div {
+    display: grid;
+    gap: 0.35rem;
+    padding: 1rem;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.calorie-cards .highlight {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.calorie-cards span {
+    color: #64748b;
+    font-size: 0.85rem;
+}
+
+.readonly-label {
+    display: inline-block;
+    margin-left: 0.35rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 999px;
+    background: #e2e8f0;
+    color: #475569;
+    font-size: 0.7rem;
+    vertical-align: middle;
+}
+
+.calorie-status {
+    margin-top: 1rem !important;
+    padding: 0.85rem;
+    border-radius: 10px;
+    background: #ecfdf5;
+    color: #166534;
+    font-weight: 700;
+}
+
+.period-filter {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.period-filter a {
+    padding: 0.45rem 0.75rem;
+    border-radius: 6px;
+    background: #e2e8f0;
+    color: #334155;
+    text-decoration: none;
+}
+
+.period-filter a.active {
+    background: #2563eb;
+    color: #fff;
+}
+
+.chart-wrapper {
+    margin-top: 1rem;
+}
+
+.chart-wrapper canvas {
+    display: block;
+    width: 100%;
+    height: 260px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.chart-legend {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 0.65rem;
+    color: #475569;
+    font-size: 0.85rem;
+}
+
+.chart-legend span::before {
+    content: '';
+    display: inline-block;
+    width: 0.7rem;
+    height: 0.2rem;
+    margin: 0 0.35rem 0.15rem 0;
+    background: currentColor;
+}
+
+.legend-expense { color: #2563eb; }
+.legend-consumption { color: #f97316; }
+.legend-baseline { color: #94a3b8; }
+
+.workout-toggle {
+    margin-bottom: 1.25rem;
+}
+
+.workout-toggle summary {
+    display: inline-flex;
+    list-style: none;
+}
+
+.workout-toggle summary::-webkit-details-marker {
+    display: none;
+}
+
+.workout-item {
+    gap: 0.4rem;
+}
+
+.workout-status {
+    display: grid;
+    justify-items: start;
+    gap: 0.45rem;
+}
+
+.workout-status label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.workout-status input[type="number"] {
+    width: 90px;
+    padding: 0.45rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+}
+
+.btn-small {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.85rem;
+}
+
+.field select {
+    width: 100%;
+    padding: 0.85rem;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+    .home-header,
+    .form-columns {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .calendar-day {
+        min-height: 2.75rem;
+        padding: 0.35rem;
+        font-size: 0.85rem;
+    }
+}

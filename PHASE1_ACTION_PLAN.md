@@ -1,7 +1,7 @@
 # Phase 1 — Autenticação e administração
 
-**Atualizado em:** 14/08/2026  
-**Status:** Em evolução — fluxos principais funcionais e testes verdes.
+**Atualizado em:** 07/09/2026  
+**Status:** Fase 1 concluída funcionalmente; Fase 2 em evolução — testes verdes.
 
 ## Situação atual
 
@@ -10,10 +10,33 @@
 - JWT assinado, com expiração e filtro de autenticação.
 - Perfil de usuário com alteração de senha.
 - Administração de usuários protegida por `ROLE_ADMIN`.
-- A tela `/home` exibe **Usuários Cadastrados** e **Cadastrar Usuário** somente para administradores.
+- A tela `/home` exibe um calendário fitness mensal protegido por autenticação.
+- Cada dia permite consultar medições, IMC e treinos programados.
+- Treinos podem ser únicos, diários ou recorrentes em um dia da semana.
+- A tela `/calorias` calcula metabolismo basal, gasto total, meta e saldo calórico.
 - O serviço bloqueia a criação de administradores por usuários comuns, mesmo que o formulário seja alterado no navegador.
 - Administrador inicial criado automaticamente pela `ServiçoSementeAdministrador`.
-- Suíte atual: **57 testes executados, 0 falhas e 0 erros** (`mvn test`).
+- Suíte atual: **60 testes executados, 0 falhas e 0 erros** (`mvn test`).
+
+## Fase 2 — Funcionalidades fitness
+
+### Concluído
+
+- [x] Criar entidade de medição por usuário com cálculo de IMC.
+- [x] Criar calendário mensal com seleção de datas.
+- [x] Criar entidade de treino com recorrência diária, semanal e única.
+- [x] Criar perfil fitness com idade, sexo, altura, peso atual, meta e atividade.
+- [x] Calcular metabolismo basal por Mifflin-St Jeor e Harris-Benedict.
+- [x] Exibir a média das fórmulas e o gasto energético total estimado.
+- [x] Registrar kcal ingeridas e kcal gastas por data.
+- [x] Calcular meta com ajuste gradual de 500 kcal para ganho ou perda de peso.
+
+### Próximo ciclo
+
+- [ ] Cobrir fórmulas e limites de entrada com testes unitários.
+- [ ] Separar lançamentos de refeições e exercícios em eventos diários.
+- [ ] Exibir gráficos de peso, IMC e saldo calórico.
+- [ ] Adicionar edição e exclusão de treinos.
 
 ## Concluído
 
@@ -54,7 +77,7 @@
 
 | Critério | Meta | Estado atual |
 |---|---:|---|
-| Testes automatizados | 100% verdes | 57/57 verdes |
+| Testes automatizados | 100% verdes | 60/60 verdes |
 | Cobertura mensurada | >= 80% | 89% de linhas |
 | Segredos fora do repositório | 100% | Pendente |
 | Validação de login | Completa | Parcial |

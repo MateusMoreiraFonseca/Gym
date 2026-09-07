@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.app.gym.application.ServicoAutenticacaoTest" time="16.199" tests="11" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.app.gym.application.ServicoMedicaoTest" time="0.572" tests="3" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -64,54 +64,7 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="testCadastroComSenhaVazia" classname="com.app.gym.application.ServicoAutenticacaoTest" time="0.681">
-    <system-out><![CDATA[07:43:07.750 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.app.gym.application.ServicoAutenticacaoTest]: ServicoAutenticacaoTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-07:43:08.013 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.app.gym.GymApplication for test class com.app.gym.application.ServicoAutenticacaoTest
-07:43:08.622 [main] INFO org.springframework.boot.devtools.restart.RestartApplicationListener -- Restart disabled due to context in which it is running
-
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
-
- :: Spring Boot ::                (v3.3.3)
-
-2026-09-07T07:43:09.243-03:00  INFO 8800 --- [           main] c.a.g.a.ServicoAutenticacaoTest          : Starting ServicoAutenticacaoTest using Java 21.0.7 with PID 8800 (started by mateu in C:\Users\mateu\Documents\GitHub\Gym)
-2026-09-07T07:43:09.246-03:00  INFO 8800 --- [           main] c.a.g.a.ServicoAutenticacaoTest          : The following 1 profile is active: "test"
-2026-09-07T07:43:11.416-03:00  INFO 8800 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-09-07T07:43:11.512-03:00  INFO 8800 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 81 ms. Found 6 JPA repository interfaces.
-2026-09-07T07:43:12.941-03:00  INFO 8800 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-09-07T07:43:13.126-03:00  INFO 8800 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
-2026-09-07T07:43:13.210-03:00  INFO 8800 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-09-07T07:43:14.017-03:00  INFO 8800 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-09-07T07:43:14.089-03:00  INFO 8800 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-09-07T07:43:14.688-03:00  INFO 8800 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:gymdb user=SA
-2026-09-07T07:43:14.691-03:00  INFO 8800 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-09-07T07:43:14.734-03:00  WARN 8800 --- [           main] org.hibernate.orm.deprecation            : HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-09-07T07:43:16.492-03:00  INFO 8800 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-09-07T07:43:16.663-03:00  INFO 8800 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-09-07T07:43:17.783-03:00  WARN 8800 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-09-07T07:43:17.865-03:00  INFO 8800 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsService
-2026-09-07T07:43:18.949-03:00  INFO 8800 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
-2026-09-07T07:43:20.006-03:00  INFO 8800 --- [           main] o.s.b.a.h2.H2ConsoleAutoConfiguration    : H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:gymdb'
-2026-09-07T07:43:20.188-03:00  INFO 8800 --- [           main] c.a.g.a.ServicoAutenticacaoTest          : Started ServicoAutenticacaoTest in 11.614 seconds (process running for 14.773)
-]]></system-out>
-    <system-err><![CDATA[WARNING: A Java agent has been loaded dynamically (C:\Users\mateu\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.19\byte-buddy-agent-1.14.19.jar)
-WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
-WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
-WARNING: Dynamic loading of agents will be disallowed by default in a future release
-]]></system-err>
-  </testcase>
-  <testcase name="testCadastroComSenhaNula" classname="com.app.gym.application.ServicoAutenticacaoTest" time="0.075"/>
-  <testcase name="testCadastroUsuarioDuplicado" classname="com.app.gym.application.ServicoAutenticacaoTest" time="0.081"/>
-  <testcase name="testCriarUsuarioComum" classname="com.app.gym.application.ServicoAutenticacaoTest" time="0.193"/>
-  <testcase name="testCadastroComUsernameNull" classname="com.app.gym.application.ServicoAutenticacaoTest" time="0.094"/>
-  <testcase name="testCriptografiaBCryptComSaltAleatorio" classname="com.app.gym.application.ServicoAutenticacaoTest" time="0.457"/>
-  <testcase name="testUsuarioPersistidoNoRepositorio" classname="com.app.gym.application.ServicoAutenticacaoTest" time="0.204"/>
-  <testcase name="testCriarUsuarioAdministrador" classname="com.app.gym.application.ServicoAutenticacaoTest" time="0.171"/>
-  <testcase name="testSenhaEhEncriptadaComBCrypt" classname="com.app.gym.application.ServicoAutenticacaoTest" time="0.259"/>
-  <testcase name="testCadastroComUsernameVazio" classname="com.app.gym.application.ServicoAutenticacaoTest" time="0.087"/>
-  <testcase name="testCadastroUsuarioValido" classname="com.app.gym.application.ServicoAutenticacaoTest" time="0.213"/>
+  <testcase name="deveClassificarImc" classname="com.app.gym.application.ServicoMedicaoTest" time="0.556"/>
+  <testcase name="deveCalcularImc" classname="com.app.gym.application.ServicoMedicaoTest" time="0.005"/>
+  <testcase name="deveRejeitarMedidasInvalidas" classname="com.app.gym.application.ServicoMedicaoTest" time="0.004"/>
 </testsuite>

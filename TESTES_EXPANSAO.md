@@ -1,7 +1,7 @@
 # Testes — Plano de expansão (Fase 1)
 
-**Atualizado em:** 14/08/2026  
-**Status:** Suíte ativa e verde — **57 testes, 0 falhas, 0 erros**.
+**Atualizado em:** 07/09/2026  
+**Status:** Suíte ativa e verde — **60 testes, 0 falhas, 0 erros**.
 
 ## Cobertura funcional atual
 
@@ -14,6 +14,7 @@
 | Login de API | `ControladorAutenticacaoApiTest` | Credenciais válidas, senha inválida e usuário inexistente | Concluído |
 | Serviços auxiliares | `ServicosAuxiliaresTest` | Criptografia, listagem e semente do administrador | Concluído |
 | Perfil e administração | `ControladoresPerfilEAdminTest` | Perfil, troca de senha, autorização e exclusão de usuário comum | Concluído |
+| Medições fitness | `ServicoMedicaoTest` | Cálculo, classificação de IMC e rejeição de medidas inválidas | Concluído |
 
 ## Verificação
 
@@ -24,7 +25,7 @@ mvn test
 Resultado esperado:
 
 ```text
-Tests run: 57, Failures: 0, Errors: 0, Skipped: 0
+Tests run: 60, Failures: 0, Errors: 0, Skipped: 0
 ```
 
 ## Próximos testes a implementar
@@ -50,9 +51,18 @@ Tests run: 57, Failures: 0, Errors: 0, Skipped: 0
 - [ ] Fluxo completo: cadastrar → login API → chamar endpoint de API protegido.
 - [ ] Testes de CORS, rate limiting e bloqueio de conta, quando esses recursos forem implementados.
 
+### Fitness
+
+- [ ] `ServicoCalorico`: Mifflin-St Jeor para os dois sexos.
+- [ ] `ServicoCalorico`: Harris-Benedict para os dois sexos.
+- [ ] `ServicoCalorico`: média basal, fator de atividade e ajuste de 500 kcal.
+- [ ] `ServicoCalorico`: saldo, déficit, superávit e registro diário.
+- [ ] `ServicoTreino`: recorrência diária, semanal e data única.
+- [ ] `ControladorHome`: seleção de datas e dados do dia.
+
 ## Medição de cobertura
 
-O JaCoCo está configurado no `pom.xml` para instrumentar os testes e gerar o relatório em `target/site/jacoco/index.html`. A medição atual é de **89% de cobertura de linhas**, **91% de instruções** e **87% de ramos**.
+O JaCoCo está configurado no `pom.xml` para instrumentar os testes e gerar o relatório em `target/site/jacoco/index.html`. A cobertura deve ser recalculada após a inclusão dos testes de calorias e treinos.
 
 Quando o acesso ao artefato estiver disponível, configurar JaCoCo e adotar esta meta:
 

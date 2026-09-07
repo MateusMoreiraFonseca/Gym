@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu perfil</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="shell shell-wide">
+    <div class="app-card">
+        <h1>Meu perfil</h1>
+        <p>Usuário: <span th:text="${usuario.username}">usuario</span></p>
+
+        <div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
+        <div th:if="${successMessage}" class="message success" th:text="${successMessage}"></div>
+
+        <div class="profile-photo-preview">
+            <img th:if="${usuario.fotoPerfil != null}" th:src="@{/perfil/foto}" alt="Foto de perfil">
+            <span th:unless="${usuario.fotoPerfil != null}" th:text="${usuario.username}">U</span>
+        </div>
+
+        <form th:action="@{/perfil/foto}" method="post" enctype="multipart/form-data" class="field-grid">
+            <div class="field">
+                <label for="foto">Foto de perfil</label>
+                <input id="foto" type="file" name="foto" accept="image/*" required>
+                <small class="muted">Imagem de até 5 MB.</small>
+            </div>
+            <button class="btn" type="submit">Carregar foto</button>
+        </form>
+
+        <section class="workout-form">
+            <h2>Dados do perfil fitness</h2>
+            <p class="muted">Atualize seus dados para calcular metabolismo e meta diária.</p>
+            <form class="field-grid" th:action="@{/calorias/perfil}" th:object="${perfilForm}" method="post">
+                <div class="form-columns">
+                    <div class="field"><label for="idade">Idade</label><input id="idade" type="number" min="13" max="120" th:field="*{idade}" required></div>
+                    <div class="field"><label for="altura">Altura (m)</label><input id="altura" type="number" step="0.01" min="0.5" max="3" th:field="*{altura}" required></div>
+                </div>
+                <div class="form-columns">
+                    <div class="field"><label for="pesoAtual">Peso atual (kg)</label><input id="pesoAtual" type="number" step="0.1" min="1" th:field="*{pesoAtual}" required></div>
+                    <div class="field"><label for="pesoMeta">Meta de peso (kg)</label><input id="pesoMeta" type="number" step="0.1" min="1" th:field="*{pesoMeta}" required></div>
+                </div>
+                <div class="form-columns">
+                    <div class="field"><label for="sexo">Sexo biológico</label><select id="sexo" th:field="*{sexo}" required><option value="">Selecione</option><option th:each="item : ${sexos}" th:value="${item}" th:text="${item.name() == 'MASCULINO' ? 'Masculino' : 'Feminino'}"></option></select></div>
+                    <div class="field"><label for="nivelAtividade">Nível de atividade</label><input id="nivelAtividade" type="hidden" th:field="*{nivelAtividade}"><output th:text="${perfilForm.nivelAtividade != null ? perfilForm.nivelAtividade.descricao : 'Sem medições'}">Sem medições</output></div>
+                </div>
+                <button class="btn" type="submit">Salvar dados fitness</button>
+            </form>
+        </section>
+
+        <section th:if="${perfil != null}" class="day-details">
+            <h2>Metabolismo calculado <span class="readonly-label">somente leitura</span></h2>
+            <div class="calorie-cards">
+                <div><strong th:text="${mifflin + ' kcal'}"></strong><span>Mifflin-St Jeor</span></div>
+                <div><strong th:text="${harris + ' kcal'}"></strong><span>Harris-Benedict</span></div>
+                <div><strong th:text="${medio + ' kcal'}"></strong><span>Média do basal</span></div>
+                <div><strong th:text="${total + ' kcal'}"></strong><span>Gasto diário com nível médio</span></div>
+                <div class="highlight"><strong th:text="${meta + ' kcal'}"></strong><span>Meta diária</span></div>
+            </div>
+            <p class="calorie-status" th:text="${situacao}"></p>
+        </section>
+
+        <section th:if="${perfil != null}" class="day-details">
+            <h2>Média dos registros calóricos</h2>
+            <nav class="period-filter" aria-label="Período da média">
+                <a th:classappend="${periodo == 'mes' ? ' active' : ''}" th:href="@{/perfil(periodo='mes')}">Mês</a>
+                <a th:classappend="${periodo == 'semana' ? ' active' : ''}" th:href="@{/perfil(periodo='semana')}">Semana</a>
+                <a th:classappend="${periodo == 'todo' ? ' active' : ''}" th:href="@{/perfil(periodo='todo')}">Todo</a>
+            </nav>
+            <div class="calorie-cards">
+                <div><strong th:text="${mediaCalorica.ingeridas + ' kcal'}"></strong><span>Média ingerida</span></div>
+                <div><strong th:text="${mediaCalorica.gastas + ' kcal'}"></strong><span>Média gasta em exercícios</span></div>
+                <div><strong th:text="${mediaCalorica.quantidadeRegistros}"></strong><span>Registros no período</span></div>
+            </div>
+            <div class="chart-wrapper" th:if="${!historicoCalorico.isEmpty()}">
+                <canvas id="historicoCalorico" aria-label="Histórico de gasto e consumo calórico"></canvas>
+                <div class="chart-legend"><span class="legend-expense">Gasto</span><span class="legend-consumption">Consumo</span><span class="legend-baseline">Gasto diário estimado</span></div>
+            </div>
+            <p class="muted" th:if="${historicoCalorico.isEmpty()}">Sem medições</p>
+        </section>
+
+        <div class="actions">
+            <a class="btn btn-secondary" th:href="@{/perfil/editar}">Editar perfil</a>
+            <a class="btn btn-secondary" th:href="@{/home}">Voltar</a>
+        </div>
+    </div>
+</div>
+<script th:inline="javascript">
+    const historico = /*[[${historicoCalorico}]]*/ [];
+    const gastoEstimado = /*[[${total ?: 0}]]*/ 0;
+    const canvas = document.getElementById('historicoCalorico');
+    if (canvas && historico.length > 0) {
+        const contexto = canvas.getContext('2d');
+        const largura = canvas.width = canvas.clientWidth * window.devicePixelRatio;
+        const altura = canvas.height = canvas.clientHeight * window.devicePixelRatio;
+        contexto.scale(window.devicePixelRatio, window.devicePixelRatio);
+        const escalaX = canvas.clientWidth / Math.max(historico.length - 1, 1);
+        const maiorValor = Math.max(gastoEstimado, ...historico.map(item => Math.max(item.kcalGastas, item.kcalIngeridas)), 1);
+        const escalaY = (canvas.clientHeight - 28) / maiorValor;
+        const desenharLinha = (seletor, cor) => {
+            contexto.beginPath();
+            contexto.strokeStyle = cor;
+            contexto.lineWidth = 3;
+            historico.forEach((item, indice) => {
+                const x = indice * escalaX;
+                const y = canvas.clientHeight - item[seletor] * escalaY - 14;
+                indice === 0 ? contexto.moveTo(x, y) : contexto.lineTo(x, y);
+            });
+            contexto.stroke();
+        };
+        contexto.strokeStyle = '#94a3b8';
+        contexto.setLineDash([6, 5]);
+        contexto.beginPath();
+        contexto.moveTo(0, canvas.clientHeight - gastoEstimado * escalaY - 14);
+        contexto.lineTo(canvas.clientWidth, canvas.clientHeight - gastoEstimado * escalaY - 14);
+        contexto.stroke();
+        contexto.setLineDash([]);
+        desenharLinha('kcalGastas', '#2563eb');
+        desenharLinha('kcalIngeridas', '#f97316');
+    }
+</script>
+</body>
+</html>

@@ -27,10 +27,18 @@ This skill guides development of the Gym Fitness app through multiple learning p
 - Learning Spring Boot + Java patterns for fitness domain
 - Preparing code for production
 
-## Phase 1: Authentication & Foundation (CURRENT)
+## Phase 1: Authentication & Foundation
 
 ### Objective
-Validate and strengthen the existing login/registration system. Learn testing and code quality best practices.
+Validate and strengthen the existing login/registration system. This foundation is implemented and remains covered by the regression suite.
+
+**Current implementation status (2026-09-07):**
+- Authentication, profile and administration are functional.
+- The home page has a monthly calendar with date selection.
+- Measurements support weight, height and BMI.
+- Workouts support one-time, daily and weekday recurrence.
+- Calorie tracking supports consumed/exercised kcal, basal metabolism and daily goals.
+- The current validation baseline is 60 passing Maven tests.
 
 ### Procedure
 
@@ -90,6 +98,17 @@ Build the core fitness tracking domain: user measurements with automatic calcula
    - All calculations verified against fitness formulas
    - API contract tests passing
    - Validations for impossible measurements
+
+### Implemented extension: Calories and metabolism
+
+1. Collect age, biological sex, height, current weight, target weight and activity level.
+2. Calculate basal metabolic rate with both Mifflin-St Jeor and Harris-Benedict.
+3. Display both results and their average.
+4. Estimate total daily expenditure using the activity factor.
+5. Apply a gradual 500 kcal adjustment for weight loss or gain goals.
+6. Record consumed and exercise kcal by date and report deficit, target or surplus.
+
+These are estimates for tracking and are not medical advice. Preserve the formulas and assumptions in tests and UI copy.
 
 ## Phase 3: Graphs & Visualization
 
@@ -202,7 +221,8 @@ src/
 
 ## Next Steps
 
-1. Start with [Authentication Checklist](./references/authentication-checklist.md)
+1. Add unit tests for `ServicoCalorico` and `ServicoTreino`.
 2. Run existing tests: `mvn test`
-3. Ask AI: "Review the authentication code in this project using the fitness-ai-learning skill"
-4. Complete Phase 1 quality gate before moving to Phase 2
+3. Add meal and exercise event entries instead of a single daily overwrite.
+4. Add trends and charts for weight, BMI and calorie balance.
+5. Complete the Phase 2 quality gate before expanding visualization.

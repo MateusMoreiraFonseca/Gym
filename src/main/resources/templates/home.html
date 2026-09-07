@@ -1,34 +1,213 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu calendário fitness</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 <body>
-<div class="shell">
+<div class="shell shell-wide">
     <div class="app-card">
-        <h1>Bem-vindo</h1>
-        <p>Você entrou na área do perfil/usuário.</p>
+        <div class="home-header">
+            <div>
+                <h1>Meu calendário fitness</h1>
+                <p>Selecione um dia para acompanhar suas medições e treinos.</p>
+            </div>
+            <div class="top-actions">
+                <a class="profile-avatar" th:href="@{/perfil}" aria-label="Abrir perfil">
+                    <img th:if="${usuario.possuiFotoPerfil()}" th:src="@{/perfil/foto}" alt="Foto de perfil">
+                    <span th:unless="${usuario.possuiFotoPerfil()}" th:text="${#strings.toUpperCase(#strings.substring(usuario.username, 0, 1))}">U</span>
+                </a>
+                <form th:action="@{/logout}" method="post">
+                    <button class="btn btn-danger" type="submit">Sair</button>
+                </form>
+            </div>
+        </div>
+
+        <div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
+
+        <details class="workout-form workout-toggle">
+            <summary class="btn">+ Cadastrar treino</summary>
+            <form id="treinoForm" class="field-grid" th:action="@{/treinos}" th:object="${treinoForm}" method="post">
+                <input type="hidden" th:field="*{dataSelecionada}" th:value="${dataSelecionada}">
+                <div class="form-columns">
+                    <div class="field"><label for="nome">Nome</label><input id="nome" type="text" th:field="*{nome}" placeholder="Ex.: Treino de pernas" required></div>
+                    <div class="recurrence-column">
+                        <fieldset class="field recurrence-options"><legend>Repetição</legend>
+                            <label><input type="radio" th:field="*{tipoRecorrencia}" value="DATA_UNICA"> Data única</label>
+                            <label><input type="radio" th:field="*{tipoRecorrencia}" value="DIARIO"> Todos os dias</label>
+                            <label><input type="radio" th:field="*{tipoRecorrencia}" value="DIA_DA_SEMANA"> Dia da semana</label>
+                        </fieldset>
+                        <div id="dataUnicaField" class="field"><label for="dataUnicaButton">Data única</label><input id="dataUnica" type="hidden" th:field="*{dataUnica}"><button id="dataUnicaButton" class="date-picker-button" type="button">Escolher data</button></div>
+                        <div id="diaDaSemanaField" class="field"><label for="weekdayPickerButton">Dia da semana</label><button id="weekdayPickerButton" class="date-picker-button" type="button">Escolher dias</button></div>
+                    </div>
+                </div>
+                <div class="field"><label for="descricao">Descrição (opcional)</label><input id="descricao" type="text" th:field="*{descricao}"></div>
+                <button class="btn" type="submit">Salvar treino</button>
+                <dialog id="weekdayPicker" class="date-picker weekday-picker">
+                    <fieldset class="field weekday-options"><legend>Dia da semana</legend>
+                        <label><input type="checkbox" name="diasDaSemana" value="MONDAY"> Segunda-feira</label>
+                        <label><input type="checkbox" name="diasDaSemana" value="TUESDAY"> Terça-feira</label>
+                        <label><input type="checkbox" name="diasDaSemana" value="WEDNESDAY"> Quarta-feira</label>
+                        <label><input type="checkbox" name="diasDaSemana" value="THURSDAY"> Quinta-feira</label>
+                        <label><input type="checkbox" name="diasDaSemana" value="FRIDAY"> Sexta-feira</label>
+                        <label><input type="checkbox" name="diasDaSemana" value="SATURDAY"> Sábado</label>
+                        <label><input type="checkbox" name="diasDaSemana" value="SUNDAY"> Domingo</label>
+                    </fieldset>
+                    <button id="closeWeekdayPicker" class="btn btn-secondary" type="button">Concluir</button>
+                </dialog>
+            </form>
+        </details>
+
+        <div class="calendar-heading">
+            <a class="calendar-nav" th:href="@{/home(year=${mesAnterior.year},month=${mesAnterior.monthValue})}" aria-label="Mês anterior">&lsaquo;</a>
+            <h2 th:text="${#strings.capitalize(nomeMes) + ' ' + mesAtual.year}"></h2>
+            <a class="calendar-nav" th:href="@{/home(year=${mesProximo.year},month=${mesProximo.monthValue})}" aria-label="Próximo mês">&rsaquo;</a>
+        </div>
+        <div class="calendar-weekdays">
+            <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+        </div>
+        <div class="calendar-grid">
+            <span th:each="dia : ${dias}" th:if="${dia.vazio}" class="calendar-day empty"></span>
+            <a th:each="dia : ${dias}" th:if="${!dia.vazio}"
+               class="calendar-day"
+               th:classappend="${dia.hoje ? ' today' : ''} + (${dia.data.equals(dataSelecionada)} ? ' selected' : '')"
+               th:href="@{/home(date=${dia.data})}">
+                <strong th:text="${dia.data.dayOfMonth}"></strong>
+                <span class="day-markers">
+                    <i th:if="${dia.temMedicao}" class="marker measurement" title="Medição registrada"></i>
+                    <i th:if="${dia.temTreino}" class="marker workout" title="Treino programado"></i>
+                </span>
+            </a>
+        </div>
+
+        <section class="day-details">
+            <h2 th:text="${'Dia ' + #temporals.format(dataSelecionada, 'dd/MM/yyyy')}"></h2>
+            <div class="detail-grid">
+                <div>
+                    <h3>Registros do dia</h3>
+                    <p th:if="${medicoesDoDia.isEmpty()}" class="muted">Nenhuma medição registrada.</p>
+                    <div th:each="medicao : ${medicoesDoDia}" class="detail-item">
+                        <strong th:text="${#numbers.formatDecimal(medicao.imc, 1, 2) + ' IMC'}"></strong>
+                        <span th:text="${#numbers.formatDecimal(medicao.peso, 1, 1) + ' kg - ' + #numbers.formatDecimal(medicao.altura, 1, 2) + ' m'}"></span>
+                    </div>
+                </div>
+                <div>
+                    <h3>Treinos cadastrados</h3>
+                    <p th:if="${treinosDoDia.isEmpty()}" class="muted">Nenhum treino para este dia.</p>
+                    <div th:each="item : ${treinosDoDia}" class="detail-item workout-item">
+                        <strong th:text="${item.treino.nome}"></strong>
+                        <span th:if="${item.treino.descricao}" th:text="${item.treino.descricao}"></span>
+                        <form th:action="@{'/treinos/' + ${item.treino.id} + '/status'}" method="post" class="workout-status">
+                            <input type="hidden" name="data" th:value="${dataSelecionada}">
+                            <label><input type="checkbox" name="concluido" value="true" th:checked="${item.concluido}"> Feito</label>
+                            <input type="number" name="totalRepeticoes" min="1" max="10000" th:value="${item.registro != null ? item.registro.totalRepeticoes : 30}" aria-label="Total de repetições">
+                            <input type="number" name="duracaoMinutos" min="1" max="600" th:value="${item.registro != null ? item.registro.duracaoMinutos : 30}" aria-label="Duração em minutos">
+                            <select name="intensidade" aria-label="Intensidade">
+                                <option th:each="nivel : ${T(com.app.gym.domain.IntensidadeTreino).values()}" th:value="${nivel}" th:text="${nivel.descricao}" th:selected="${item.registro != null ? item.registro.intensidade == nivel : nivel == T(com.app.gym.domain.IntensidadeTreino).MODERADA}"></option>
+                            </select>
+                            <button class="btn btn-small" type="submit">Salvar</button>
+                        </form>
+                        <span th:if="${item.concluido}" th:text="${item.totalRepeticoes + ' repetições - ' + item.kcalGastas + ' kcal gastas'}"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <div class="actions">
-            <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="action-wrap">
-                <a class="btn" th:href="@{/admin/usuarios}">Usuários Cadastrados</a>
-            </div>
-
-            <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="action-wrap">
-                <a class="btn" th:href="@{/register}">Cadastrar Usuário</a>
-            </div>
-
-            <a class="btn" th:href="@{/perfil/editar}">Editar Perfil</a>
-
-            <form th:action="@{/logout}" method="post">
-                <button class="btn btn-danger" type="submit">Sair</button>
-            </form>
+            <a class="btn btn-secondary" th:href="@{/medicoes}">Histórico de medições</a>
+            <a class="btn btn-secondary" th:href="@{/perfil}">Meu perfil</a>
+            <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="btn btn-secondary" th:href="@{/admin/usuarios}">Administração</a>
         </div>
     </div>
 </div>
+<dialog id="datePicker" class="date-picker">
+    <div class="date-picker-header">
+        <button id="previousMonth" type="button" aria-label="Mês anterior">&lsaquo;</button>
+        <strong id="currentMonth"></strong>
+        <button id="nextMonth" type="button" aria-label="Próximo mês">&rsaquo;</button>
+    </div>
+    <div class="date-picker-weekdays"><span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span></div>
+    <div id="datePickerDays" class="date-picker-days"></div>
+    <button id="closeDatePicker" class="btn btn-secondary" type="button">Fechar</button>
+</dialog>
+<script>
+    const tiposRecorrencia = document.querySelectorAll('input[name="tipoRecorrencia"]');
+    const diaDaSemanaField = document.getElementById('diaDaSemanaField');
+    const diasDaSemana = document.querySelectorAll('input[name="diasDaSemana"]');
+    const dataUnicaField = document.getElementById('dataUnicaField');
+    const dataUnica = document.getElementById('dataUnica');
+    const dataUnicaButton = document.getElementById('dataUnicaButton');
+    const weekdayPickerButton = document.getElementById('weekdayPickerButton');
+    const atualizarCamposDeRepeticao = () => {
+        const tipoSelecionado = document.querySelector('input[name="tipoRecorrencia"]:checked')?.value;
+        const dataUnicaSelecionada = tipoSelecionado === 'DATA_UNICA';
+        const diaDaSemanaSelecionado = tipoSelecionado === 'DIA_DA_SEMANA';
+        dataUnicaField.hidden = !dataUnicaSelecionada;
+        dataUnicaField.style.display = dataUnicaSelecionada ? 'grid' : 'none';
+        dataUnica.required = dataUnicaSelecionada;
+        dataUnica.disabled = !dataUnicaSelecionada;
+        dataUnicaButton.disabled = !dataUnicaSelecionada;
+        diaDaSemanaField.hidden = !diaDaSemanaSelecionado;
+        diaDaSemanaField.style.display = diaDaSemanaSelecionado ? 'grid' : 'none';
+        weekdayPickerButton.disabled = !diaDaSemanaSelecionado;
+        diasDaSemana.forEach(dia => dia.disabled = !diaDaSemanaSelecionado);
+    };
+    tiposRecorrencia.forEach(tipo => tipo.addEventListener('change', atualizarCamposDeRepeticao));
+    atualizarCamposDeRepeticao();
+
+    const datePicker = document.getElementById('datePicker');
+    let mesCalendario = dataUnica.value ? new Date(`${dataUnica.value}T12:00:00`) : new Date();
+
+    const formatarData = data => data.toISOString().slice(0, 10);
+    const atualizarTextoData = () => {
+        dataUnicaButton.textContent = dataUnica.value
+            ? new Date(`${dataUnica.value}T12:00:00`).toLocaleDateString('pt-BR')
+            : 'Escolher data';
+    };
+    const desenharCalendario = () => {
+        const ano = mesCalendario.getFullYear();
+        const mes = mesCalendario.getMonth();
+        document.getElementById('currentMonth').textContent = mesCalendario.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+        const primeiroDia = new Date(ano, mes, 1).getDay();
+        const totalDias = new Date(ano, mes + 1, 0).getDate();
+        const dias = document.getElementById('datePickerDays');
+        dias.replaceChildren();
+        for (let indice = 0; indice < primeiroDia; indice++) dias.append(document.createElement('span'));
+        for (let dia = 1; dia <= totalDias; dia++) {
+            const data = new Date(ano, mes, dia, 12);
+            const botao = document.createElement('button');
+            botao.type = 'button';
+            botao.textContent = dia;
+            botao.className = formatarData(data) === dataUnica.value ? 'selected' : '';
+            botao.addEventListener('click', () => {
+                dataUnica.value = formatarData(data);
+                atualizarTextoData();
+                datePicker.close();
+                desenharCalendario();
+            });
+            dias.append(botao);
+        }
+    };
+    dataUnicaButton.addEventListener('click', () => { desenharCalendario(); datePicker.showModal(); });
+    document.getElementById('previousMonth').addEventListener('click', () => { mesCalendario.setMonth(mesCalendario.getMonth() - 1); desenharCalendario(); });
+    document.getElementById('nextMonth').addEventListener('click', () => { mesCalendario.setMonth(mesCalendario.getMonth() + 1); desenharCalendario(); });
+    document.getElementById('closeDatePicker').addEventListener('click', () => datePicker.close());
+    atualizarTextoData();
+
+    const weekdayPicker = document.getElementById('weekdayPicker');
+    const closeWeekdayPicker = document.getElementById('closeWeekdayPicker');
+    const atualizarTextoDias = () => {
+        const nomesDosDias = [...diasDaSemana]
+            .filter(dia => dia.checked)
+            .map(dia => dia.parentElement.textContent.trim());
+        weekdayPickerButton.textContent = nomesDosDias.length === 0 ? 'Escolher dias' : nomesDosDias.join(', ');
+    };
+    weekdayPickerButton.addEventListener('click', () => weekdayPicker.showModal());
+    closeWeekdayPicker.addEventListener('click', () => weekdayPicker.close());
+    diasDaSemana.forEach(dia => dia.addEventListener('change', atualizarTextoDias));
+    atualizarTextoDias();
+</script>
 </body>
 </html>
-

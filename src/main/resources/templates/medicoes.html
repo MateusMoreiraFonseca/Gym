@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas medições</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="shell shell-wide">
+    <div class="app-card">
+        <h1>Minhas medições</h1>
+        <p>Acompanhe seu peso e índice de massa corporal.</p>
+
+        <div th:if="${errorMessage}" class="message error" th:text="${errorMessage}"></div>
+
+        <form class="field-grid" th:action="@{/medicoes}" th:object="${formulario}" method="post">
+            <div class="field">
+                <label for="peso">Peso (kg)</label>
+                <input id="peso" type="number" step="0.1" min="0.1" max="500" th:field="*{peso}" required>
+            </div>
+            <div class="field">
+                <label for="altura">Altura (m)</label>
+                <input id="altura" type="number" step="0.01" min="0.5" max="3" th:field="*{altura}" required>
+            </div>
+            <button class="btn" type="submit">Registrar medição</button>
+        </form>
+
+        <table class="admin-table" th:if="${!medicoes.isEmpty()}">
+            <thead>
+            <tr><th>Data</th><th>Peso</th><th>Altura</th><th>IMC</th><th>Classificação</th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="medicao : ${medicoes}">
+                <td data-label="Data" th:text="${#temporals.format(medicao.dataMedicao, 'dd/MM/yyyy HH:mm')}"></td>
+                <td data-label="Peso" th:text="${#numbers.formatDecimal(medicao.peso, 1, 1) + ' kg'}"></td>
+                <td data-label="Altura" th:text="${#numbers.formatDecimal(medicao.altura, 1, 2) + ' m'}"></td>
+                <td data-label="IMC" th:text="${#numbers.formatDecimal(medicao.imc, 1, 2)}"></td>
+                <td data-label="Classificação" th:text="${@servicoMedicao.classificacaoImc(medicao.imc)}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <p th:if="${medicoes.isEmpty()}" class="empty-state">Você ainda não registrou nenhuma medição.</p>
+
+        <div class="actions">
+            <a class="btn btn-secondary" th:href="@{/home}">Voltar</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -5,5 +5,6 @@ com\app\gym\domain\ContaUsuarioTest.class
 com\app\gym\infrastructure\FiltroAutenticacaoJwtTest.class
 com\app\gym\infrastructure\ControladoresPerfilEAdminTest.class
 com\app\gym\application\ServicosAuxiliaresTest.class
+com\app\gym\application\ServicoMedicaoTest.class
 com\app\gym\infrastructure\ConfiguracaoSegurancaTest.class
 com\app\gym\application\ServicoJwtTest.class
